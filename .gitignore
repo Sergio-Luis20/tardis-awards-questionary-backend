@@ -7,10 +7,11 @@ target/
 .env
 private.key
 public.key
-simple-questions.csv
+questions.csv
+old_questions/
 private_base64
 public_base64
-simple_questions_base64
+questions_base64
 database.db
 
 ### STS ###

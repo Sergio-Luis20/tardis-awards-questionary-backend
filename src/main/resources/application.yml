@@ -8,10 +8,8 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
   jpa:
-    database-platform: ${DATABASE_PLATFORM}
     hibernate:
       ddl-auto: update
-    open-in-view: true
   servlet:
     multipart:
       max-request-size: 8MB
@@ -51,7 +49,4 @@ admin:
 discord:
   bot-token: ${DISCORD_AUTH_BOT_TOKEN}
   tardis-id: ${DISCORD_TARDIS_ID}
-  redirect-uri: ${DISCORD_REDIRECT_URI}
-  authenticated-uri: ${DISCORD_AUTHENTICATED_URI}
   scope: identify
-frontend-origin: ${FRONTEND_ORIGIN}

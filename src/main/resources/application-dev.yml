@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:database.db
+    username: FarRed
+    password:
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: true
+discord:
+  redirect-uri: http://localhost:8080/auth/discord/callback
+  authenticated-uri: http://localhost:3000/authenticated
+frontend-origin: http://localhost:3000

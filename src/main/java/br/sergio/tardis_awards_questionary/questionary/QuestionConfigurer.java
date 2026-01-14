@@ -22,19 +22,30 @@ public class QuestionConfigurer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        try (InputStream stream = getClass().getResourceAsStream("/simple-questions.csv")) {
-            if (stream == null) {
-                throw new NullPointerException("File \"simple-questions.csv\" not found in classpath");
-            }
+        InputStream stream = getClass().getResourceAsStream("/questions.csv");
+        if (stream == null) {
+            throw new NullPointerException("File \"questions.csv\" not found in classpath");
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             List<Question> questions = new ArrayList<>();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             Map<String, String> notes = new HashMap<>();
             for (String line; (line = reader.readLine()) != null;) {
+                if (line.startsWith("*")) {
+                    // Free-choice question
+                    String[] tokens = line.substring(1).split(",");
+                    int questionId = Integer.parseInt(tokens[0]);
+                    String questionText = tokens[1];
+                    String description = tokens[2].replace('§', ',');
+                    int numAnswers = Integer.parseInt(tokens[3]);
+                    questions.add(new Question(questionId, questionText, description, numAnswers, null));
+                    continue;
+                }
                 notes.clear();
                 String[] tokens = line.split(",");
                 int questionId = Integer.parseInt(tokens[0]);
                 String questionText = tokens[1];
-                String[] idsTokens = Arrays.copyOfRange(tokens, 2, tokens.length);
+                String description = tokens[2].replace('§', ',');
+                String[] idsTokens = Arrays.copyOfRange(tokens, 3, tokens.length);
                 String[] discordIds = new String[idsTokens.length];
                 for (int i = 0; i < discordIds.length; i++) {
                     String token = idsTokens[i];
@@ -51,9 +62,9 @@ public class QuestionConfigurer implements CommandLineRunner {
                     }
                     notes.put(id, note);
                 }
-                Question question = simpleQuestion(questionId, questionText, discordIds);
+                Question question = simpleQuestion(questionId, questionText, description, discordIds);
                 Set<MemberResponse> members = question.options();
-                for (MemberResponse member: members) {
+                for (MemberResponse member : members) {
                     String discordId = member.getDiscordId();
                     if (notes.containsKey(discordId)) {
                         member.setNote(notes.get(discordId));
@@ -61,15 +72,11 @@ public class QuestionConfigurer implements CommandLineRunner {
                 }
                 questions.add(question);
             }
-            questions.add(new Question(25, "Qual é o melhor shipp do servidor?", 2, null));
-            questions.add(new Question(26, "Quem é o mais amado do servidor?", 1, null));
-            questions.add(new Question(27, "Quem é a mais gasosa (não necessariamente mulher) do servidor?", 1, null));
-            questions.add(new Question(28, "Quem é o louco internado do ano?", 1, null));
             Question.setQuestions(questions);
         }
     }
 
-    private Question simpleQuestion(int id, String question, String[] discordIds) {
+    private Question simpleQuestion(int id, String question, String description, String[] discordIds) {
         Set<MemberResponse> members = new HashSet<>(discordIds.length);
         for (String discordId : discordIds) {
             if (discordId.indexOf('_') >= 0) {
@@ -81,7 +88,7 @@ public class QuestionConfigurer implements CommandLineRunner {
                 members.add(new MemberResponse(discordService.getMember(discordId)));
             }
         }
-        return new Question(id, question, 1, members);
+        return new Question(id, question, description, 1, members);
     }
 
 }

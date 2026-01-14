@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    database-platform: ${DATABASE_PLATFORM}
+    show-sql: false
+discord:
+  redirect-uri: ${DISCORD_REDIRECT_URI}
+  authenticated-uri: ${DISCORD_AUTHENTICATED_URI}
+frontend-origin: ${FRONTEND_ORIGIN}

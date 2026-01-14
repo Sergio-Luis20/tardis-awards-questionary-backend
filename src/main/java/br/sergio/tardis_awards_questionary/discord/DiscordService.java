@@ -1,14 +1,13 @@
 package br.sergio.tardis_awards_questionary.discord;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,8 @@ import java.util.Objects;
 
 @Getter
 @Service
+@Slf4j
 public class DiscordService implements AutoCloseable {
-
-    private static Logger log = LoggerFactory.getLogger(DiscordService.class);
 
     private JDA jda;
     private Guild tardis;

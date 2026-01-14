@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public record Question(int id, String question, int numAnswers, Set<MemberResponse> options) {
+public record Question(int id, String question, String description, int numAnswers, Set<MemberResponse> options) {
 
     private static volatile List<Question> questions;
 
