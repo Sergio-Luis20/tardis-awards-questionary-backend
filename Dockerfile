@@ -1,4 +1,4 @@
-FROM openjdk:25-jdk AS build
+FROM eclipse-temurin:25-jdk AS build
 COPY . .
 
 RUN --mount=type=secret,id=private_base64,dst=/etc/secrets/private_base64 \
@@ -11,7 +11,7 @@ RUN --mount=type=secret,id=questions_base64,dst=/etc/secrets/questions_base64 \
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -q -DskipTests
 
-FROM openjdk:25-jdk
+FROM eclipse-temurin:25-jdk
 
 EXPOSE 8080
 COPY --from=build /target/tardis-awards-questionary.jar tardis-awards-questionary.jar
