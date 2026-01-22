@@ -23,12 +23,12 @@ public class MemberResponse implements Comparable<MemberResponse> {
             case Member member -> {
                 this.discordId = member.getId();
                 this.name = member.getEffectiveName();
-                this.avatarUrl = member.getAvatarUrl();
+                this.avatarUrl = member.getEffectiveAvatarUrl();
             }
             case User user -> {
                 this.discordId = user.getId();
                 this.name = user.getEffectiveName();
-                this.avatarUrl = user.getAvatarUrl();
+                this.avatarUrl = user.getEffectiveAvatarUrl();
             }
             default -> {
                 this.discordId = sf.getId();
