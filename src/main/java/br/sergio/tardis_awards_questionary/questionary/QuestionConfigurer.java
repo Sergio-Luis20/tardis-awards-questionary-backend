@@ -4,7 +4,7 @@ import br.sergio.tardis_awards_questionary.discord.DiscordService;
 import br.sergio.tardis_awards_questionary.discord.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -81,11 +81,11 @@ public class QuestionConfigurer implements CommandLineRunner {
         for (String discordId : discordIds) {
             if (discordId.indexOf('_') >= 0) {
                 String[] ids = discordId.split("_");
-                Member first = discordService.getMember(ids[0]);
-                Member second = discordService.getMember(ids[1]);
+                UserSnowflake first = discordService.getUserSnowflake(ids[0]);
+                UserSnowflake second = discordService.getUserSnowflake(ids[1]);
                 members.add(new MemberResponse(first, second));
             } else {
-                members.add(new MemberResponse(discordService.getMember(discordId)));
+                members.add(new MemberResponse(discordService.getUserSnowflake(discordId)));
             }
         }
         return new Question(id, question, description, 1, members);

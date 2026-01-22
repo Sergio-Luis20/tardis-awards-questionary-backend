@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
@@ -16,13 +18,27 @@ public class MemberResponse implements Comparable<MemberResponse> {
     private String discordId, name, avatarUrl, note;
     private MemberResponse second;
 
-    public MemberResponse(Member member) {
-        this.discordId = member.getId();
-        this.name = member.getEffectiveName();
-        this.avatarUrl = member.getEffectiveAvatarUrl();
+    public MemberResponse(UserSnowflake sf) {
+        switch (sf) {
+            case Member member -> {
+                this.discordId = member.getId();
+                this.name = member.getEffectiveName();
+                this.avatarUrl = member.getAvatarUrl();
+            }
+            case User user -> {
+                this.discordId = user.getId();
+                this.name = user.getEffectiveName();
+                this.avatarUrl = user.getAvatarUrl();
+            }
+            default -> {
+                this.discordId = sf.getId();
+                this.name = sf.getAsMention();
+                this.avatarUrl = sf.getDefaultAvatarUrl();
+            }
+        }
     }
 
-    public MemberResponse(Member first, Member second) {
+    public MemberResponse(UserSnowflake first, UserSnowflake second) {
         this(first);
         this.second = new MemberResponse(second);
     }

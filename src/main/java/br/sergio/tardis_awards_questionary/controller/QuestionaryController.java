@@ -10,7 +10,7 @@ import br.sergio.tardis_awards_questionary.user.AppUser;
 import br.sergio.tardis_awards_questionary.user.BasicUserResponse;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +43,9 @@ public class QuestionaryController {
         if (service.exists(answer.getDiscordId())) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+        if (!discordService.containsMemberById(answer.getDiscordId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         Answer created = service.post(answer);
 
@@ -72,17 +75,18 @@ public class QuestionaryController {
     }
 
     private BasicUserResponse toUser(String discordId) {
-        Member member = discordService.getMember(discordId);
-        return new BasicUserResponse(member);
+        return discordService.getMember(discordId)
+                .map(BasicUserResponse::new)
+                .orElseGet(() -> new BasicUserResponse(discordService.getUser(discordId)));
     }
 
     private MemberResponse toMemberResponse(String discordId) {
         if (discordId.indexOf('_') < 0) {
-            return new MemberResponse(discordService.getMember(discordId));
+            return new MemberResponse(discordService.getUserSnowflake(discordId));
         } else {
             String[] ids = discordId.split("_");
-            Member first = discordService.getMember(ids[0]);
-            Member second = discordService.getMember(ids[1]);
+            UserSnowflake first = discordService.getUserSnowflake(ids[0]);
+            UserSnowflake second = discordService.getUserSnowflake(ids[1]);
             return new MemberResponse(first, second);
         }
     }

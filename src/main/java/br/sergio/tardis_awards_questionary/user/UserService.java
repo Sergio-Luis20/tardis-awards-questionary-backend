@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -19,15 +18,9 @@ public class UserService implements UserDetailsService {
     private EntityManager entityManager;
 
     public AppUser createNewUser(String discordId) {
-        Optional<AppUser> user = repository.findById(discordId);
-
-        if (user.isPresent()) {
-            return user.get();
-        } else if (!discordService.containsMemberById(discordId)) {
-            return null;
-        } else {
-            return repository.save(new AppUser(discordId));
-        }
+        return discordService.containsMemberById(discordId) ?
+                repository.findById(discordId).orElseGet(() -> repository.save(new AppUser(discordId)))
+                : null;
     }
 
     public void saveUser(AppUser user) {

@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Service
@@ -54,8 +57,18 @@ public class DiscordService implements AutoCloseable {
         return false;
     }
 
-    public Member getMember(String id) {
-        return tardis.getMemberById(id);
+    public Optional<Member> getMember(String id) {
+        return Optional.ofNullable(tardis.getMemberById(id));
+    }
+
+    public User getUser(String id) {
+        return jda.retrieveUserById(id).complete();
+    }
+
+    public UserSnowflake getUserSnowflake(String id) {
+        return getMember(id)
+                .map(UserSnowflake.class::cast)
+                .orElseGet(() -> getUser(id));
     }
 
     @Override

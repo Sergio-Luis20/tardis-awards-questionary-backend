@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal AppUser user) {
-        return ResponseEntity.ok(new UserResponse(discordService.getMember(user.getDiscordId()), user.hasVoted(), user.isAdmin()));
+        return ResponseEntity.ok(new UserResponse(discordService.getUserSnowflake(user.getDiscordId()), user.hasVoted(), user.isAdmin()));
     }
 
 }
